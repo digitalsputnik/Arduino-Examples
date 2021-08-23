@@ -3,6 +3,7 @@
 
   Based off the original Blink:
   Turns the RED LED on for one second, then off for one second, repeatedly.
+  Changed to include sync for future NTP implementation
 
   This code has been adapted to fit DS Apollo line products. You can find more info about the products:
   https://www.digitalsputnik.com
@@ -24,15 +25,19 @@ const int ledPin = 33;  // RED LED
 
 // the setup function runs once when you press reset or power the board
 void setup() {
-  // setup analog output for the white chanel
+  // setup analog output for the white chanel on PWM channel 0
   ledcSetup(0, 19000, 12);
   ledcAttachPin(ledPin, 0);
 }
 
 // the loop function runs over and over again forever
 void loop() {
-  ledcWrite(0, 64);   // max is 2048, remember how much current can Your USB support...
-  delay(1000);        // wait for a second
-  ledcWrite(0, 0);    // turn the LED off by making the voltage 0
-  delay(1000);        // wait for a second
+  if(millis()%2000>1000)  // loop over 2 seconds ON/OFF
+  {
+    ledcWrite(0, 64);     // max is 2048, remember how much current can Your USB support...
+  } 
+  else 
+  {
+    ledcWrite(0, 0);      // turn the LED off by making the voltage 0
+  }
 }
